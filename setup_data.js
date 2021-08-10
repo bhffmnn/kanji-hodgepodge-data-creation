@@ -26,42 +26,31 @@ async function setupData() {
   console.log("Data is being created. This can take a while.");
   console.log("(1/2) Kanji data:")
 
-  console.log("Step 1/6: Loading joyo_kanji.json...");
+  console.log("Step 1/7: Loading joyo_kanji.json...");
   const joyo = JSON.parse(fs.readFileSync(path.join(srcFolderPath, "joyo_kanji.json")));
 
-  console.log("Step 2/6: Loading radicals.json...");
+  console.log("Step 2/7: Loading radicals.json...");
   const radicals = JSON.parse(fs.readFileSync(path.join(srcFolderPath, "radicals.json")));
 
-  console.log("Step 3/6: Creating kanjidic2.json...");
+  console.log("Step 3/7: Creating kanjidic2.json...");
   const kanjidic2 = await getJsonDataFromPythonScript(kanjidicScriptPath, kanjidicSourcePath);
   writeJsonFile(kanjidic2, path.join(targetFolderPath, "kanjidic2.json"));
 
-  console.log("Step 4/6: Creating my_unihan.json...");
+  console.log("Step 4/7: Creating my_unihan.json...");
   const my_unihan = await getJsonDataFromPythonScript(unihanScriptPath, unihanSources);
   writeJsonFile(my_unihan, path.join(targetFolderPath, "my_unihan.json"));
 
-  console.log("Step 5/6: Creating wiktionary_readings.json...");
+  console.log("Step 5/7: Creating wiktionary_readings.json...");
   const wiktionary = await getJsonDataFromPythonScript(wiktionaryScriptPath, wiktionarySourcePath);
   writeJsonFile(wiktionary, path.join(targetFolderPath, "wiktionary_readings.json"));
 
-  console.log("Step 6/6: Creating hodgepodge.json...");
+  console.log("Step 6/7: Creating hodgepodge.json...");
   const hodgepodge = h.buildHodgepodge(kanjidic2, my_unihan, joyo, radicals, wiktionary);
   writeJsonFile(hodgepodge, path.join(targetFolderPath, "hodgepodge.json"));
 
-  console.log("(2/2) Vocabulary data:")
-
-  console.log("Step 1/2: Creating frequency_dictionary.json...");
+  console.log("Step 7/7: Creating frequency_dictionary.json...");
   const freqDict = await getJsonDataFromPythonScript(freqDictScriptPath, jmdictPath);
   writeJsonFile(freqDict, path.join(targetFolderPath, "frequency_dictionary.json"));
-
-  console.log("Step 2/2: Creating vocabulary files...");
-  const kanjiVocabularyList = v.buildVocabularyList(hodgepodge, freqDict);
-  console.log("yes" + kanjiVocabularyList.length);
-  // This doesn't work
-  for (let i = 0; i < kanjiVocabularyList.length; i++) {
-    codepoint = hodgepodge[i].literal.codePointAt(0);
-    writeJsonFile(kanjiVocabularyList[i], path.join(targetFolderPath, "kanji_vocabulary/" + codepoint + ".json"));
-  }
 
   async function getJsonDataFromPythonScript(scriptPath, arguments) {
     return new Promise((resolve, reject) => {
