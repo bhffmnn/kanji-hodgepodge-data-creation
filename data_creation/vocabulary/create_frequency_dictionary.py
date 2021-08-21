@@ -16,7 +16,7 @@ class JMdicteHandler(xml.sax.ContentHandler):
                             "infos": []}
         self.senseEle = {"values": [], "kanjiRestrictions": [], "readingRestrictions": [],
                             "pos": []}
-        # oh boi, in jmdict pos and misc are only defined for one sense element if it is the same
+        # in jmdict pos and misc are only defined for one sense element if it is the same
         # for the subsequent elements. I haven't dealt with this yet (maybe I don't need those)
         self.wordList = []
         
